@@ -11,21 +11,21 @@ require 'pry'
 
 def draw_grid(arr)
 	arr.each_with_index do |choice, i|
-		p "#{choice}  "+ "|"
-		binding.pry
-		p "--------------\n" if i == 2 || i  ==5
+		print "#{choice}  "+ "|"
+		#binding.pry
+		print "\n--------------\n" if i == 2 || i  ==5
 	end
 end
 
-grid=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+grid=['x', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' ']
 draw_grid(grid)
 
 begin
 	puts "Input your move (1..9)"
 	player_input=gets.chomp
 	player_choice=player_input.to_i
-
-end while grid[player_choice] == ' '
+	puts "yours: #{player_choice}"
+end while (grid[player_choice] == ' ') && (player_choice )
 
 grid[player_choice]= 'O'
 draw_grid(grid)
