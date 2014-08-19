@@ -7,7 +7,7 @@
 	#		4.1 draw computer's position on the grid
 	#	5. check if computer wins)
 
-require 'pry'
+#require 'pry'
 
 #Draw  Grid with Choices
 def draw_grid(arr)
@@ -15,31 +15,30 @@ def draw_grid(arr)
 	arr.each_with_index do |choice, i|
 		print choice
 		print  "|"  if ((i+1)%3) != 0
-		#print "\n" if ((i+1)%3) == 0
-		#binding.pry
 		print "\n---------\n" if i == 2 || i  ==5 || i==8
 	end
 end
 
-
-#win=[[1,1,1,0,0,0,0,0,0], [0,0,0,1,1,1,0,0,0], [0,0,0,0,0,0,1,1,1], [1.0,0,1,0,0,10,0], [0,1,0,0,1,0,0,1,0], [0,0,1,0,0,1,0,0,1], [1,0,0,0,1,0,0,0,1], [0,0,1,0,1,0,1,0,0]]
+  
 def arbitrate(arr, icon)
   win_pattern=[[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
   win_pattern.each do |w|
-    p arr
-    p w
-    gets
-    if arr[w[1]]==icon && arr[w[2]]==icon && arr[w[3]]==icon
+    if (arr[w[0]]==icon) && (arr[w[1]]==icon) && (arr[w[2]]==icon)
       return TRUE # icon wins!
-    else
-      return FALSE
     end
   end
+  return FALSE
 end
 
-def grid_empty(arr, choice)
-  arr_empty=arr.select {|s| s=" "}
+def choice_at_empty?(arr, choice)
+  return TRUE if choice<0 && choice >8
+  return (arr[choice]==" ")?  TRUE : FALSE
+end
 
+def grid_full?(arr)
+  a=arr.select {|b| b==" "}
+  return (a.length == 0)? TRUE : FALSE
+end
 
 #Initialize Grid
 grid=[' ',' ',' ',' ',' ',' ',' ',' ',' ']
@@ -53,13 +52,16 @@ loop do #Game begin
 	player_input=gets.chomp
 	player_choice=player_input.to_i
 	puts "yours: #{player_choice}"
-  grid_empty(player_choice)
-  end while  ((grid[player_choice] =='O'  || grid[player_choice] =='X') && (player_choice <0 && player_choice > 9))
+  end while  !choice_at_empty?(grid, player_choice)
 
   grid[player_choice]= 'O'
   draw_grid(grid)
   if arbitrate(grid, 'O')
     puts "You won!" 
+    break
+  end
+  if grid_full?(grid)
+    puts "Grid Full!"
     break
   end
 
@@ -76,6 +78,10 @@ loop do #Game begin
     break
   end
 
+    if grid_full?(grid)
+    puts "Grid Full!"
+    break
+  end
 
 end
 
