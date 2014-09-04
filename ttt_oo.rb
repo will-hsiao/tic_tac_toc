@@ -11,108 +11,126 @@
 
 #Draw  Grid with Choices
 class Grid
-	attr_accessor :board
-
-	def initialize
-		i=0
-		9.times do 
-			board[i] = " "
-			i+=1
-		end
-	end
-
-
-  def draw
-	puts "\e[H\e[2J" #Clean Screen
-	@board.each_with_index do |choice, i|
-		print choice
-		print  "|"  if ((i+1)%3) != 0
-		print "\n---------\n" if i == 2 || i  ==5 || i==8
-	end
+attr_accessor :board
+  def initialize
+        @board = []
+        i=0
+        9.times do  
+            @board[i] = " "
+            i+=1
+        end
   end
 
-  
-def arbitration(icon)
-  win_pattern=[[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
-  win_pattern.each do |w|
-    if (@board[w[0]]==icon) && (arr[w[1]]==icon) && (arr[w[2]]==icon)
-      return TRUE # icon wins!
-  else
-  	return FALSE
-end
+    def draw
+        puts "\e[H\e[2J" #Clean Screen
+       puts "   |   |   "
+        puts "#{@board[0]}  |  #{@board[1]}  |  #{@board[2]}"
+       puts "   |   |   "
+       puts "---------- "
+       puts "   |   |    "
+       puts "#{@board[3]}  |  #{@board[4]}  |  #{@board[5]}"   
+       puts "   |   |   "
+       puts "---------- "
+       puts "   |   |    "    
+       puts "#{@board[6]}  |  #{@board[7]}  |  #{@board[8]}"          
 
-def empty?(choice)
-  return TRUE if choice<0 && choice >8
-  return (@board[choice]==" ")?  TRUE : FALSE
-end
+  end
 
-def full?
-  a=@board.select {|b| b==" "}
-  return (a.length == 0)? TRUE : FALSE
-end
+  def arbitration(icon)
+      win_pattern=[[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+      win_pattern.each do |w|
+      if (@board[w[0]]==icon) && (@board[w[1]]==icon) && (@board[w[2]]==icon)
+          return TRUE # icon wins!
+        else
+          return FALSE
+      end #endif
+    end #end each
+  end
 
-end
+  def empty?(choice)
+    return TRUE if choice<0 && choice >8
+    return (@board[choice]==" ")?  TRUE : FALSE
+  end
+
+  def full?
+      a=@board.select {|b| b==" "}
+      return (a.length == 0)? TRUE : FALSE
+  end
+
+    def choose_by_input
+    begin
+    puts "Input your move (0..8)"
+    inp =gets.chomp.downcase
+    ch= inp.to_i
+    end while  !empty?(ch)
+  end
+
+  def choose_by_rand
+      begin
+      ch=rand(8)
+    end while !empty?(ch)
+  end
+
+
+end # End Class Grid
 
 class Player
-	attr_accesor :icon
+  attr_accessor :icon
 
-	def initialize(icn)
-		@icon=icn
-	end
+  def initialize(icn)
+    @icon=icn
+  end
 
-	def choose_by_input
-  	begin
-		puts "Input your move (0..8)"
-		inp =gets.chomp.downcase
-		ch= inp.to_i
-  	end while  !empty?(ch)
-	end
 
-	def choose_by_rand
-		  begin
-			ch=rand(8)
- 		end while !empty?(ch)
- 	end
+end  
+#End Class Grid
 
-end
 
-#Initialize Grid
-grid= Grid.new
-grid.draw
 
-player1 = Player.new("O")
-player2 = Player.new("X")
+class Game
+  attr_accessor :grid, :player1, :player2
+
+  def initialize
+
+  end
+
+  def run
+    @grid= Grid.new
+    @grid.draw
+
+    @player1 = Player.new("O")
+    @player2 = Player.new("X")
 
 loop do #Game begin
 
   #Player Choice
 
-  player1.choose_by_input
-  grid.board[player1.choice] = player1.icon
-  grid.draw
+  @player1.choice = @grid.choose_by_input
+  @grid.board[player1.choice] = @player1.icon
+  @grid.draw
 
-  if grid.arbitrate(player1.icon)
+  if @grid.arbitrate(@player1.icon)
     puts "You won!" 
     break
   end
 
-  if grid.full?
+  if @grid.full?
     puts "Grid Full!"
     break
   end
 
 
   #Computer Choice
- player2.choose_by_rand
-  grid.board[player2.choice] = player2.icon
-  grid.draw
+ @player2.choice = @grid.choose_by_rand
+  @grid.board[player2.choice] = @player2.icon
+  @grid.draw
 
-  if grid.arbitrate(player2.icon)
+  if @grid.arbitrate(@player2.icon)
     puts "Computer won!" 
     break
   end
   
-  if grid.full?
+  if @grid.full?
     puts "Grid Full!"
     break
   end
@@ -120,10 +138,16 @@ loop do #Game begin
   puts "Want to player again?"
   again=gets.chomp.downcase
   if again !=  "y"
-  	break
+    break
   end
 
-end
+end #end Loop
+puts "BYE!"
+end #end run
+end #Class Game
+
+Game.new.run
+
 
 
 
