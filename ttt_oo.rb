@@ -22,29 +22,28 @@ attr_accessor :board
   end
 
     def draw
-        puts "\e[H\e[2J" #Clean Screen
-       puts "   |   |   "
-        puts "#{@board[0]}  |  #{@board[1]}  |  #{@board[2]}"
-       puts "   |   |   "
-       puts "---------- "
-       puts "   |   |    "
-       puts "#{@board[3]}  |  #{@board[4]}  |  #{@board[5]}"   
-       puts "   |   |   "
-       puts "---------- "
-       puts "   |   |    "    
-       puts "#{@board[6]}  |  #{@board[7]}  |  #{@board[8]}"          
+       puts "\e[H\e[2J" #Clean Screen
+       puts "   |    |   "
+       puts "#{@board[0]}  | #{@board[1]}  |  #{@board[2]}"
+       puts "   |    |   "
+       puts "------------ "
+       puts "   |    |    "
+       puts "#{@board[3]}  | #{@board[4]}  |  #{@board[5]}"   
+       puts "   |    |   "
+       puts "------------ "
+       puts "   |    |    "    
+       puts "#{@board[6]}  | #{@board[7]}  |  #{@board[8]}"          
 
   end
 
-  def arbitration(icon)
+  def arbitrate(icon)
       win_pattern=[[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
       win_pattern.each do |w|
       if (@board[w[0]]==icon) && (@board[w[1]]==icon) && (@board[w[2]]==icon)
           return TRUE # icon wins!
-        else
-          return FALSE
       end #endif
-    end #end each
+      end #end each
+      return FALSE
   end
 
   def empty?(choice)
@@ -57,33 +56,34 @@ attr_accessor :board
       return (a.length == 0)? TRUE : FALSE
   end
 
-    def choose_by_input
+  def choose_by_input
     begin
     puts "Input your move (0..8)"
     inp =gets.chomp.downcase
     ch= inp.to_i
     end while  !empty?(ch)
+    return ch
   end
 
   def choose_by_rand
       begin
       ch=rand(8)
     end while !empty?(ch)
+    return ch
   end
 
 
 end # End Class Grid
 
 class Player
-  attr_accessor :icon
+  attr_accessor :icon, :choice
 
   def initialize(icn)
     @icon=icn
+    @choice = nil
   end
-
-
 end  
-#End Class Grid
+#End Class Player
 
 
 
@@ -106,7 +106,7 @@ loop do #Game begin
   #Player Choice
 
   @player1.choice = @grid.choose_by_input
-  @grid.board[player1.choice] = @player1.icon
+  @grid.board[@player1.choice] = @player1.icon
   @grid.draw
 
   if @grid.arbitrate(@player1.icon)
@@ -121,8 +121,8 @@ loop do #Game begin
 
 
   #Computer Choice
- @player2.choice = @grid.choose_by_rand
-  @grid.board[player2.choice] = @player2.icon
+  @player2.choice = @grid.choose_by_rand
+  @grid.board[@player2.choice] = @player2.icon
   @grid.draw
 
   if @grid.arbitrate(@player2.icon)
@@ -135,14 +135,13 @@ loop do #Game begin
     break
   end
 
-  puts "Want to player again?"
-  again=gets.chomp.downcase
-  if again !=  "y"
-    break
-  end
-
 end #end Loop
 puts "BYE!"
+#  puts "Want to player again?"
+#  again=gets.chomp.downcase
+#  if again !=  "y"
+#    break
+#  end
 end #end run
 end #Class Game
 
